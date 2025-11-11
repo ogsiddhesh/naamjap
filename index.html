@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radha Naam Jap Counter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ffffff">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #tapArea {
+            flex-grow: 1;
+            /* Cursors */
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent; /* Remove tap flash on mobile */
+            user-select: none; /* Prevent text selection */
+        }
+        
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) translateX(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-120px) translateX(var(--random-x)) scale(0.8);
+            }
+        }
+        .floating-text {
+            position: absolute;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #EC4899; /* Pink */
+            pointer-events: none; /* Clicks pass through */
+            animation: floatUp 2s ease-out forwards;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            --random-x: 0; /* Will be set by JS */
+        }
+
+        /* Circular progress */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        /* Ad placeholders */
+        .ad-placeholder {
+            background-color: #f0f0f0;
+            color: #999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            border-radius: 8px;
+        }
+        .ad-placeholder-top {
+            width: 100%;
+            height: 50px; /* Small header ad */
+        }
+        .ad-placeholder-bottom {
+            width: 100%;
+            height: 60px; /* Sticky footer ad */
+        }
+    </style>
+    <!-- 
+      PASTE YOUR GOOGLE ANALYTICS SCRIPT HERE
+    -->
+    <!-- 
+      PASTE YOUR MONETAG (PropellerAds) HEAD SCRIPT HERE
+    -->
+</head>
+<body class="bg-gray-50 flex flex-col">
+
+    <!-- Top Ad Banner Placeholder -->
+    <div class="ad-placeholder ad-placeholder-top">
+        <!-- 
+          PASTE YOUR MONETAG (PropellerAds) TOP BANNER CODE HERE
+        -->
+        Top Ad Banner (e.g., 970x50)
+    </div>
+
+    <!-- Header / Navbar -->
+    <nav class="bg-black text-white shadow-md w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <!-- Left: Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <!-- Placeholder for Logo -->
+                    <div class="w-10 h-10 bg-orange-500 rounded-full mr-2"></div>
+                </div>
+                
+                <!-- Middle: Desktop Nav Links -->
+                <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+                    <a href="index.html" class="bg-orange-700 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Naam Jap Counter</a>
+                    <a href="shreeram.html" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Shree Ram Jap</a>
+                    <a href="contact.html" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contact Us</a>
+                </div>
+
+                <!-- Right: Desktop Buttons (Empty) -->
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                </div>
+
+                <!-- Mobile: Hamburger Menu -->
+                <div class="sm:hidden flex items-center">
+                    <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                        <span class="sr-only">Open main menu</span>
+                        <!-- Icon when menu is closed. -->
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <!-- Icon when menu is open. -->
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div class="sm:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="bg-orange-700 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Naam Jap Counter</a>
+                <a href="shreeram.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Shree Ram Jap</a>
+                <a href="contact.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content & Tap Area -->
+    <main id="tapArea" class="w-full flex-grow flex flex-col items-center justify-center p-4 overflow-auto">
+        
+        <h1 class="text-3xl font-bold text-orange-600 mb-4">राधा नाम जप</h1>
+
+        <!-- Counter Circle -->
+        <div class="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center mb-8">
+            <!-- Background circle -->
+            <svg class="w-full h-full" viewBox="0 0 100 100">
+                <circle
+                    class="text-gray-200"
+                    stroke-width="10"
+                    stroke="currentColor"
+                    fill="transparent"
+                    r="45"
+                    cx="50"
+                    cy="50"
+                />
+                <!-- Progress circle -->
+                <circle
+                    id="progress-circle"
+                    class="text-orange-500 progress-ring__circle"
+                    stroke-width="10"
+                    stroke-dasharray="282.74"
+                    stroke-dashoffset="282.74"
+                    stroke="currentColor"
+                    fill="transparent"
+                    r="45"
+                    cx="50"
+                    cy="50"
+                />
+            </svg>
+            <span id="current-jap-count" class="absolute text-7xl font-bold text-gray-700">0</span>
+        </div>
+
+        <!-- Stat Cards -->
+        <div class="grid grid-cols-3 gap-3 sm:gap-6 w-full max-w-lg">
+            <!-- Malas Card -->
+            <div class="bg-pink-50 border-2 border-pink-200 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
+                <span class="text-3xl mb-1">📿</span>
+                <span class="text-pink-600 text-lg font-semibold">Malas</span>
+                <span id="malas-count" class="text-4xl font-bold text-pink-800">0</span>
+            </div>
+            <!-- Total Japa Card -->
+            <div class="bg-orange-50 border-2 border-orange-200 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
+                <span class="text-3xl mb-1">🕉️</span>
+                <span class="text-orange-600 text-lg font-semibold">Total Japa</span>
+                <span id="total-japa-count" class="text-4xl font-bold text-orange-800">0</span>
+            </div>
+            <!-- Today's Japa Card -->
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
+                <span class="text-3xl mb-1">📅</span>
+                <span class="text-blue-600 text-lg font-semibold">Today's Japa</span>
+                <span id="today-japa-count" class="text-4xl font-bold text-blue-800">0</span>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Sticky Bottom Ad Banner Placeholder -->
+    <div class="ad-placeholder ad-placeholder-bottom sticky bottom-0">
+        <!-- 
+          PASTE YOUR MONETAG (PropellerAds) BOTTOM BANNER CODE HERE
+        -->
+        Bottom Sticky Ad (e.g., 320x50)
+    </div>
+
+    <script>
+        // --- Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+
+        // --- DOM Elements ---
+        const tapArea = document.getElementById('tapArea');
+        const currentJapCountEl = document.getElementById('current-jap-count');
+        const malasCountEl = document.getElementById('malas-count');
+        const totalJapaCountEl = document.getElementById('total-japa-count');
+        const todayJapaCountEl = document.getElementById('today-japa-count');
+        const progressCircle = document.getElementById('progress-circle');
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        const MALA_COUNT = 108;
+        const circleCircumference = 2 * Math.PI * 45; // 2 * pi * r
+
+        // --- State Variables ---
+        let totalJapa = 0;
+        let todayJapa = 0;
+        let todayDate = new Date().toISOString().split('T')[0];
+
+        // --- Initialization ---
+        window.addEventListener('load', () => {
+            loadState();
+            updateUI();
+        });
+
+        
+        // Main tap listener
+        tapArea.addEventListener('click', (e) => {
+            // Prevent tap if clicking on a button or link
+            const targetTag = e.target.tagName.toLowerCase();
+            if (targetTag === 'button' || targetTag === 'a' || e.target.closest('button') || e.target.closest('a') || e.target.closest('nav')) {
+                return; 
+            }
+
+            totalJapa++;
+            todayJapa++;
+
+            saveState();
+            updateUI();
+
+            // 4. Show Floating Text
+            showFloatingText(e.clientX, e.clientY);
+        });
+
+        // Mobile menu toggle
+        mobileMenuButton.addEventListener('click', () => {
+            const isHidden = mobileMenu.classList.contains('hidden');
+            mobileMenu.classList.toggle('hidden', !isHidden);
+            // Toggle icons
+            mobileMenuButton.querySelectorAll('svg').forEach(svg => svg.classList.toggle('hidden'));
+        });
+
+
+        // --- Functions ---
+
+        function loadState() {
+            const storedTotalJapa = localStorage.getItem('totalJapa');
+            const storedTodayJapa = localStorage.getItem('todayJapa');
+            const storedTodayDate = localStorage.getItem('todayDate');
+
+            const currentDate = new Date().toISOString().split('T')[0];
+
+            if (storedTotalJapa) {
+                totalJapa = parseInt(storedTotalJapa, 10);
+            }
+
+            if (storedTodayDate && storedTodayDate === currentDate) {
+                // It's the same day, load today's japa
+                if (storedTodayJapa) {
+                    todayJapa = parseInt(storedTodayJapa, 10);
+                }
+            } else {
+                // It's a new day, reset today's japa
+                todayJapa = 0;
+                todayDate = currentDate;
+                // Save the new date immediately
+                localStorage.setItem('todayDate', todayDate);
+                localStorage.setItem('todayJapa', '0');
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('totalJapa', totalJapa);
+            localStorage.setItem('todayJapa', todayJapa);
+            localStorage.setItem('todayDate', todayDate);
+        }
+
+        function updateUI() {
+            const currentMalaJap = totalJapa % MALA_COUNT;
+            const malas = Math.floor(totalJapa / MALA_COUNT);
+
+            // Update text counts
+            currentJapCountEl.textContent = currentMalaJap;
+            malasCountEl.textContent = malas;
+            totalJapaCountEl.textContent = totalJapa;
+            todayJapaCountEl.textContent = todayJapa;
+
+            // Update progress circle
+            const progress = currentMalaJap / MALA_COUNT;
+            const offset = circleCircumference - (progress * circleCircumference);
+            progressCircle.style.strokeDashoffset = offset;
+        }
+
+        function showFloatingText(x, y) {
+            // *** FIX: Create only ONE text element per tap ***
+            const textEl = document.createElement('span');
+            textEl.classList.add('floating-text');
+            textEl.textContent = 'राधा';
+
+            // Random horizontal drift
+            const randomX = (Math.random() - 0.5) * 60; // -30px to +30px
+            textEl.style.setProperty('--random-x', `${randomX}px`);
+
+            // Random starting position near the tap
+            const offsetX = (Math.random() - 0.5) * 40;
+            const offsetY = (Math.random() - 0.5) * 40;
+            
+            // Position at tap location
+            textEl.style.left = `${x - 30 + offsetX}px`; // Adjust for text width
+            textEl.style.top = `${y - 30 + offsetY}px`; // Adjust for text height
+
+            // Random animation duration
+            textEl.style.animationDuration = `${(Math.random() * 0.5) + 1.5}s`; // 1.5s to 2s
+            
+            // Random scale
+            textEl.style.transform = `scale(${(Math.random() * 0.3) + 0.9})`; // 0.9 to 1.2
+
+            document.body.appendChild(textEl);
+
+            // Remove after animation
+            textEl.addEventListener('animationend', () => {
+                textEl.remove();
+            });
+        }
+
+    </script>
+    <!-- 
+      PASTE YOUR MONETAG (In-Page Push / Social Bar) SCRIPT HERE
+    -->
+</body>
+</html>
