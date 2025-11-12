@@ -40,7 +40,8 @@
             position: absolute;
             font-size: 2.5rem;
             font-weight: bold;
-            color: #3B82F6; /* Blue for Shree Ram */
+            /* 2. Changed Color */
+            color: #3B82F6; /* Blue */
             pointer-events: none; /* Clicks pass through */
             animation: floatUp 2s ease-out forwards;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
@@ -53,6 +54,9 @@
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
         }
+
+        /* Ad placeholders styles are correctly removed */
+
     </style>
     </head>
 <body class="bg-gray-50 flex flex-col">
@@ -76,8 +80,12 @@
                 <div class="sm:hidden flex items-center">
                     <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
                         <span class="sr-only">Open main menu</span>
-                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -142,7 +150,6 @@
         </div>
     </main>
     
-
     <script>
         // --- Service Worker Registration ---
         if ('serviceWorker' in navigator) {
@@ -200,9 +207,8 @@
             showFloatingText(e.clientX, e.clientY);
         });
 
-        // Mobile menu toggle
-        mobileMenuButton.addEventListener('click',.bind(this));
-        
+        // Mobile menu toggle (THIS IS THE FIXED PART)
+        mobileMenuButton.addEventListener('click', () => {
             const isHidden = mobileMenu.classList.contains('hidden');
             mobileMenu.classList.toggle('hidden', !isHidden);
             // Toggle icons
@@ -213,7 +219,7 @@
         // --- Functions ---
 
         function loadState() {
-            // *** IMPORTANT: Using "ram_" prefix for separate storage ***
+            // 5. Changed localStorage keys for separate counting
             const storedTotalJapa = localStorage.getItem('ram_totalJapa');
             const storedTodayJapa = localStorage.getItem('ram_todayJapa');
             const storedTodayDate = localStorage.getItem('ram_todayDate');
@@ -240,7 +246,7 @@
         }
 
         function saveState() {
-            // *** IMPORTANT: Using "ram_" prefix for separate storage ***
+            // 6. Changed localStorage keys for separate counting
             localStorage.setItem('ram_totalJapa', totalJapa);
             localStorage.setItem('ram_todayJapa', todayJapa);
             localStorage.setItem('ram_todayDate', todayDate);
@@ -253,7 +259,7 @@
             // Update text counts
             currentJapCountEl.textContent = currentMalaJap;
             malasCountEl.textContent = malas;
-            totalJapaCountEl.textContent = totalJapa;
+            totalJapCountEl.textContent = totalJapa;
             todayJapaCountEl.textContent = todayJapa;
 
             // Update progress circle
@@ -263,9 +269,10 @@
         }
 
         function showFloatingText(x, y) {
+            // *** FIX: Create only ONE text element per tap ***
             const textEl = document.createElement('span');
             textEl.classList.add('floating-text');
-            // *** CHANGED TEXT CONTENT ***
+            // 7. Changed floating text
             textEl.textContent = 'श्री राम';
 
             // Random horizontal drift
@@ -276,7 +283,7 @@
             const offsetX = (Math.random() - 0.5) * 40;
             const offsetY = (Math.random() - 0.5) * 40;
             
-            // *** Adjusted position for wider text ***
+            // 8. Adjusted position for wider text
             textEl.style.left = `${x - 50 + offsetX}px`; // Adjust for text width
             textEl.style.top = `${y - 30 + offsetY}px`; // Adjust for text height
 
@@ -297,6 +304,6 @@
     </script>
     
     <script>(function(s){s.dataset.zone='10177130',s.src='https://forfrogadiertor.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-    
-</body>
+
+    </body>
 </html>
