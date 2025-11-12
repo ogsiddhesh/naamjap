@@ -3,27 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shree Ram Jap</title>
+    <title>Shree Ram Jap Counter</title>
+    <meta name="monetag" content="e0ec961a460c4a93003ddb1edf2a942b">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ffffff">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .ad-placeholder {
-            background-color: #f0f0f0; color: #999; display: flex;
-            align-items: center; justify-content: center; font-size: 0.875rem;
-            border-radius: 8px;
-        }
-        .ad-placeholder-top { width: 100%; height: 50px; }
-        .ad-placeholder-bottom { width: 100%; height: 60px; }
-    </style>
+    
+    
     <script>(function(s){s.dataset.zone='10177139',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
-</head>
-<body class="bg-gray-50 flex flex-col h-screen">
 
-    <div class="ad-placeholder ad-placeholder-top">
-        Top Ad Banner (e.g., 970x50)
-    </div>
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #tapArea {
+            flex-grow: 1;
+            /* Cursors */
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent; /* Remove tap flash on mobile */
+            user-select: none; /* Prevent text selection */
+        }
+        
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) translateX(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-120px) translateX(var(--random-x)) scale(0.8);
+            }
+        }
+        .floating-text {
+            position: absolute;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3B82F6; /* Changed to Blue for Shree Ram */
+            pointer-events: none; /* Clicks pass through */
+            animation: floatUp 2s ease-out forwards;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            --random-x: 0; /* Will be set by JS */
+        }
+
+        /* Circular progress */
+        .progress-ring__circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+    </style>
+    </head>
+<body class="bg-gray-50 flex flex-col">
 
     <nav class="bg-black text-white shadow-md w-full">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -38,7 +73,8 @@
                     <a href="contact.html" class="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contact Us</a>
                 </div>
 
-                <div class="hidden sm:ml-6 sm:flex sm:items-center"></div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                </div>
 
                 <div class="sm:hidden flex items-center">
                     <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
@@ -49,6 +85,7 @@
                 </div>
             </div>
         </div>
+
         <div class="sm:hidden hidden" id="mobile-menu">
             <div class="px-2 pt-2 pb-3 space-y-1">
                 <a href="index.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Naam Jap Counter</a>
@@ -56,28 +93,212 @@
                 <a href="contact.html" class="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Contact Us</a>
             </div>
         </div>
-    </nav>
+    </nav
 
-    <main class="w-full flex-grow flex flex-col items-center justify-center p-4 text-center">
-        <h1 class="text-3xl font-bold text-orange-600 mb-4">Shree Ram Jap</h1>
-        <p class="text-lg text-gray-700">This page is under construction.</p>
+    <main id="tapArea" class="w-full flex-grow flex flex-col items-center justify-center p-4 overflow-auto">
+        
+        <h1 class="text-3xl font-bold text-orange-600 mb-4">श्री राम नाम जप</h1>
+
+        <div class="relative w-64 h-64 sm:w-80 sm:h-80 flex items-center justify-center mb-8">
+            <svg class="w-full h-full" viewBox="0 0 100 100">
+                <circle
+                    class="text-gray-200"
+                    stroke-width="10"
+                    stroke="currentColor"
+                    fill="transparent"
+                    r="45"
+                    cx="50"
+                    cy="50"
+                />
+                <circle
+                    id="progress-circle"
+                    class="text-orange-500 progress-ring__circle"
+                    stroke-width="10"
+                    stroke-dasharray="282.74"
+                    stroke-dashoffset="282.74"
+                    stroke="currentColor"
+                    fill="transparent"
+                    r="45"
+                    cx="50"
+                    cy="50"
+                />
+            </svg>
+            <span id="current-jap-count" class="absolute text-7xl font-bold text-gray-700">0</span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 sm:gap-6 w-full max-w-lg">
+            <div class="bg-pink-50 border-2 border-pink-200 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
+                <span class="text-3xl mb-1">📿</span>
+                <span class="text-pink-600 text-lg font-semibold">Malas</span>
+                <span id="malas-count" class="text-4xl font-bold text-pink-800">0</span>
+            </div>
+            <div class="bg-orange-50 border-2 border-orange-200 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
+                <span class="text-3xl mb-1">🕉️</span>
+                <span class="text-orange-600 text-lg font-semibold">Total Japa</span>
+                <span id="total-japa-count" class="text-4xl font-bold text-orange-800">0</span>
+            </div>
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 flex flex-col items-center justify-center shadow-lg">
+                <span class="text-3xl mb-1">📅</span>
+                <span class="text-blue-600 text-lg font-semibold">Today's Japa</span>
+                <span id="today-japa-count" class="text-4xl font-bold text-blue-800">0</span>
+            </div>
+        </div>
     </main>
     
-    <div class="ad-placeholder ad-placeholder-bottom sticky bottom-0">
-        Bottom Sticky Ad (e.g., 320x50)
-    </div>
 
     <script>
-        // Mobile menu toggle
+        // --- Service Worker Registration ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+
+        // --- DOM Elements ---
+        const tapArea = document.getElementById('tapArea');
+        const currentJapCountEl = document.getElementById('current-jap-count');
+        const malasCountEl = document.getElementById('malas-count');
+        const totalJapaCountEl = document.getElementById('total-japa-count');
+        const todayJapaCountEl = document.getElementById('today-japa-count');
+        const progressCircle = document.getElementById('progress-circle');
         const mobileMenuButton = document.getElementById('mobile-menu-button');
         const mobileMenu = document.getElementById('mobile-menu');
+
+        const MALA_COUNT = 108;
+        const circleCircumference = 2 * Math.PI * 45; // 2 * pi * r
+
+        // --- State Variables ---
+        let totalJapa = 0;
+        let todayJapa = 0;
+        let todayDate = new Date().toISOString().split('T')[0];
+
+        // --- Initialization ---
+        window.addEventListener('load', () => {
+            loadState();
+            updateUI();
+        });
+
+        
+        // Main tap listener
+        tapArea.addEventListener('click', (e) => {
+            // Prevent tap if clicking on a button or link
+            const targetTag = e.target.tagName.toLowerCase();
+            if (targetTag === 'button' || targetTag === 'a' || e.target.closest('button') || e.target.closest('a') || e.target.closest('nav')) {
+                return; 
+            }
+
+            totalJapa++;
+            todayJapa++;
+
+            saveState();
+            updateUI();
+
+            // 4. Show Floating Text
+            showFloatingText(e.clientX, e.clientY);
+        });
+
+        // Mobile menu toggle
         mobileMenuButton.addEventListener('click', () => {
             const isHidden = mobileMenu.classList.contains('hidden');
             mobileMenu.classList.toggle('hidden', !isHidden);
+            // Toggle icons
             mobileMenuButton.querySelectorAll('svg').forEach(svg => svg.classList.toggle('hidden'));
         });
+
+
+        // --- Functions ---
+
+        function loadState() {
+            // *** IMPORTANT: Using "ram_" prefix for separate storage ***
+            const storedTotalJapa = localStorage.getItem('ram_totalJapa');
+            const storedTodayJapa = localStorage.getItem('ram_todayJapa');
+            const storedTodayDate = localStorage.getItem('ram_todayDate');
+
+            const currentDate = new Date().toISOString().split('T')[0];
+
+            if (storedTotalJapa) {
+                totalJapa = parseInt(storedTotalJapa, 10);
+            }
+
+            if (storedTodayDate && storedTodayDate === currentDate) {
+                // It's the same day, load today's japa
+                if (storedTodayJapa) {
+                    todayJapa = parseInt(storedTodayJapa, 10);
+                }
+            } else {
+                // It's a new day, reset today's japa
+                todayJapa = 0;
+                todayDate = currentDate;
+                // Save the new date immediately
+                localStorage.setItem('ram_todayDate', todayDate);
+                localStorage.setItem('ram_todayJapa', '0');
+            }
+        }
+
+        function saveState() {
+            // *** IMPORTANT: Using "ram_" prefix for separate storage ***
+            localStorage.setItem('ram_totalJapa', totalJapa);
+            localStorage.setItem('ram_todayJapa', todayJapa);
+            localStorage.setItem('ram_todayDate', todayDate);
+        }
+
+        function updateUI() {
+            const currentMalaJap = totalJapa % MALA_COUNT;
+            const malas = Math.floor(totalJapa / MALA_COUNT);
+
+            // Update text counts
+            currentJapCountEl.textContent = currentMalaJap;
+            malasCountEl.textContent = malas;
+            totalJapaCountEl.textContent = totalJapa;
+            todayJapaCountEl.textContent = todayJapa;
+
+            // Update progress circle
+            const progress = currentMalaJap / MALA_COUNT;
+            const offset = circleCircumference - (progress * circleCircumference);
+            progressCircle.style.strokeDashoffset = offset;
+        }
+
+        function showFloatingText(x, y) {
+            const textEl = document.createElement('span');
+            textEl.classList.add('floating-text');
+            // *** CHANGED TEXT CONTENT ***
+            textEl.textContent = 'श्री राम';
+
+            // Random horizontal drift
+            const randomX = (Math.random() - 0.5) * 60; // -30px to +30px
+            textEl.style.setProperty('--random-x', `${randomX}px`);
+
+            // Random starting position near the tap
+            const offsetX = (Math.random() - 0.5) * 40;
+            const offsetY = (Math.random() - 0.5) * 40;
+            
+            // *** Adjusted position for wider text ***
+            textEl.style.left = `${x - 50 + offsetX}px`; // Adjust for text width
+            textEl.style.top = `${y - 30 + offsetY}px`; // Adjust for text height
+
+            // Random animation duration
+            textEl.style.animationDuration = `${(Math.random() * 0.5) + 1.5}s`; // 1.5s to 2s
+            
+            // Random scale
+            textEl.style.transform = `scale(${(Math.random() * 0.3) + 0.9})`; // 0.9 to 1.2
+
+            document.body.appendChild(textEl);
+
+            // Remove after animation
+            textEl.addEventListener('animationend', () => {
+                textEl.remove();
+            });
+        }
+
     </script>
+    
     <script>(function(s){s.dataset.zone='10177130',s.src='https://forfrogadiertor.com/tag.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
+    
 </body>
 </html>
-
