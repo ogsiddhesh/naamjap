@@ -207,7 +207,7 @@
             showFloatingText(e.clientX, e.clientY);
         });
 
-        // Mobile menu toggle (THIS IS THE FIXED PART)
+        // Mobile menu toggle (This is the working code from your index.html)
         mobileMenuButton.addEventListener('click', () => {
             const isHidden = mobileMenu.classList.contains('hidden');
             mobileMenu.classList.toggle('hidden', !isHidden);
@@ -259,7 +259,7 @@
             // Update text counts
             currentJapCountEl.textContent = currentMalaJap;
             malasCountEl.textContent = malas;
-            totalJapCountEl.textContent = totalJapa;
+            totalJapaCountEl.textContent = totalJapa;
             todayJapaCountEl.textContent = todayJapa;
 
             // Update progress circle
